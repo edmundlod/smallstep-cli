@@ -13,7 +13,7 @@ import (
 
 	"github.com/smallstep/certinfo"
 	"github.com/smallstep/cli-utils/errs"
-	zx509 "github.com/smallstep/zcrypto/x509"
+	zx509 "github.com/zmap/zcrypto/x509"
 	"go.step.sm/crypto/pemutil"
 
 	"github.com/smallstep/cli/flags"

@@ -1,6 +1,6 @@
 module github.com/smallstep/cli
 
-go 1.26.0
+go 1.27.0
 
 require (
 	github.com/Microsoft/go-winio v0.6.4
@@ -22,8 +22,6 @@ require (
 	github.com/smallstep/go-attestation v0.4.4-0.20260814222900-a849f4e2cd68
 	github.com/smallstep/linkedca v0.26.0
 	github.com/smallstep/truststore v0.13.0
-	github.com/smallstep/zcrypto v0.0.0-20221001003018-1ab2364d2a91
-	github.com/smallstep/zlint v0.0.0-20220930192201-67fb4aa21910
 	github.com/stretchr/testify v1.12.1
 	github.com/urfave/cli v1.22.17
 	go.mozilla.org/pkcs7 v0.10.0
@@ -101,6 +99,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/newrelic/go-agent/v3 v3.42.0 // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/peterbourgon/diskv/v3 v3.0.1 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/prometheus/client_golang v1.23.2 // indirect
@@ -117,8 +116,10 @@ require (
 	github.com/smallstep/pkcs7 v0.2.1 // indirect
 	github.com/smallstep/scep v0.0.0-20250318231241-a25cabb69492 // indirect
 	github.com/spf13/cast v1.7.0 // indirect
-	github.com/weppos/publicsuffix-go v0.20.0 // indirect
+	github.com/weppos/publicsuffix-go v0.50.4-0.20261018191641-fa5685825dd4 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
+	github.com/zmap/zcrypto v0.0.0-20261021190112-201ba9f14061 // indirect
+	github.com/zmap/zlint/v3 v3.6.2 // indirect
 	go.etcd.io/bbolt v1.4.3 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.67.0 // indirect
@@ -128,7 +129,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.44.0 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
-	golang.org/x/net v0.60.0 // indirect
+	golang.org/x/net v0.61.0 // indirect
 	golang.org/x/oauth2 v0.36.0 // indirect
 	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/text v0.43.0 // indirect

@@ -9,11 +9,22 @@ import (
 	"github.com/urfave/cli"
 
 	"github.com/smallstep/cli-utils/errs"
-	zx509 "github.com/smallstep/zcrypto/x509"
-	"github.com/smallstep/zlint"
+	zx509 "github.com/zmap/zcrypto/x509"
+	zlint "github.com/zmap/zlint/v3"
+	"github.com/zmap/zlint/v3/lint"
 
 	"github.com/smallstep/cli/flags"
 )
+
+// webPKISources are the lint families that only apply to publicly-trusted
+// certificates. They are skipped unless --profile=webpki is given.
+var webPKISources = lint.SourceList{
+	lint.CABFBaselineRequirements,
+	lint.CABFEVGuidelines,
+	lint.CABFSMIMEBaselineRequirements,
+	lint.MozillaRootStorePolicy,
+	lint.AppleRootStorePolicy,
+}
 
 func lintCommand() cli.Command {
 	return cli.Command{
@@ -81,6 +92,19 @@ authenticity of the remote server.
     **directory**
 	:  Relative or full path to a directory. Every PEM encoded certificate from each file in the directory will be used for path validation.`,
 			},
+			cli.StringFlag{
+				Name:  "profile",
+				Value: "private",
+				Usage: `Which lint families to apply.
+
+: <profile> is a case-sensitive string and may be one of:
+
+    **private**
+	:  Default. Skips the lint families that only apply to publicly-trusted certificates (CA/Browser Forum, Mozilla and Apple root store policies), leaving RFC and community lints. Appropriate for an internal PKI.
+
+    **webpki**
+	:  Applies every lint, including the CA/Browser Forum Baseline Requirements. Appropriate for certificates intended to be publicly trusted.`,
+			},
 			cli.BoolFlag{
 				Name: "insecure",
 				Usage: `Use an insecure client to retrieve a remote peer certificate. Useful for
@@ -101,8 +125,12 @@ func lintAction(ctx *cli.Context) error {
 		roots      = ctx.String("roots")
 		serverName = ctx.String("servername")
 		insecure   = ctx.Bool("insecure")
+		profile    = ctx.String("profile")
 		block      *pem.Block
 	)
+	if profile != "private" && profile != "webpki" {
+		return errs.InvalidFlagValue(ctx, "profile", profile, "private, webpki")
+	}
 	switch addr, isURL, err := trimURL(crtFile); {
 	case err != nil:
 		return err
@@ -131,7 +159,15 @@ func lintAction(ctx *cli.Context) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	zlintResult := zlint.LintCertificate(zcrt)
+	registry := lint.GlobalRegistry()
+	if profile == "private" {
+		registry, err = registry.Filter(lint.FilterOptions{ExcludeSources: webPKISources})
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	}
+
+	zlintResult := zlint.LintCertificateEx(zcrt, registry)
 	b, err := json.MarshalIndent(struct {
 		*zlint.ResultSet
 	}{zlintResult}, "", " ")
